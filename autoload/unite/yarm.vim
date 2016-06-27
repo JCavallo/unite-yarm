@@ -109,7 +109,21 @@ endfunction
 "
 function! unite#yarm#to_issue(issue)
   let issue = a:issue
-  let issue.abbr = '#' . issue.id . ' ' . issue.subject
+  let issue.abbr = '#' . issue.id . ' '
+  if exists('g:unite_yarm_title_fields')
+    for key in g:unite_yarm_title_fields
+      let value = ''
+      if has_key(issue, key)
+        if type(issue[key]) == 4
+          let value = issue[key].name
+        else
+          let value = issue[key]
+        endif
+      endif
+      let issue.abbr .= '[' . value . '] '
+    endfor
+  endif
+  let issue.abbr .= issue.subject
   let issue.word = issue.abbr
   " TODO
   let rest_url = s:server_url() . '/issues/' . issue.id . '.json?format=json?include=journals'
