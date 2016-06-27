@@ -142,7 +142,7 @@ function! unite#yarm#get_issues(option)
     return []
   endif
   " check status code
-  if split(res.header[0])[1] != '200'
+  if split(res.header[10])[1] != '200'
     call unite#yarm#error(res.header[0])
     return []
   endif

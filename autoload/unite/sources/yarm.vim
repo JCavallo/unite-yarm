@@ -208,7 +208,7 @@ function! s:yarm_put_issue()
   let res   = webapi#http#post(issue.rest_url , s:create_put_json() , 
                           \ {'Content-Type' : 'application/json'} , 'PUT')
   " split HTTP/1.0 200 OK
-  let status = split(res.header[0])[1]
+  let status = split(res.header[10])[1]
   if status == '200' || status == '100'
     " :wq 保存して閉じる 
     " :w  チケットを取り直して再描画
