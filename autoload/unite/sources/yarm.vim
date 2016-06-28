@@ -35,6 +35,8 @@ let s:unite_source      = {}
 let s:unite_source.name = 'yarm'
 let s:unite_source.default_action = {'common' : 'open'}
 let s:unite_source.action_table   = {}
+let s:unite_source.syntax = 'uniteSource__Redmine'
+let s:unite_source.hooks = {}
 " create list
 function! s:unite_source.gather_candidates(args, context)
   " parse args
@@ -74,6 +76,31 @@ function! s:unite_source.change_candidates(args, context)
     return []
   endif
 endfunction
+"
+" Syntax
+"
+function! s:unite_source.hooks.on_syntax(args, context) abort "{{{
+  syntax match uniteSource__Redmine_issue /#[0-9]*/
+        \ contained containedin=uniteSource__Redmine
+  if exists('g:unite_yarm_title_fields')
+    for key in g:unite_yarm_title_fields
+      let cmd = 'syntax match uniteSource__Redmine_' . key[0] . ' /'
+      let left_val = key[2][0]
+      if left_val == '[' || left_val == ']'
+        let left_val = '\' . left_val
+      endif
+      let right_val = key[2][1]
+      if right_val == '[' || right_val == ']'
+        let right_val = '\' . right_val
+      endif
+      let cmd .= left_val . '.\{-}' . right_val . '/'
+      let cmd .= ' contained containedin=uniteSource__Redmine'
+      execute cmd
+      execute 'highlight default link uniteSource__Redmine_' . key[0] . ' ' . key[3]
+    endfor
+  endif
+  highlight default link uniteSource__Redmine_issue PreProc
+endfunction"}}}
 "
 " action table
 "

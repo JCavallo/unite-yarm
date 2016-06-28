@@ -109,18 +109,20 @@ endfunction
 "
 function! unite#yarm#to_issue(issue)
   let issue = a:issue
-  let issue.abbr = '#' . issue.id . '	'
+  let issue.abbr = '#' . issue.id . ' '
   if exists('g:unite_yarm_title_fields')
     for key in g:unite_yarm_title_fields
       let value = ''
-      if has_key(issue, key)
-        if type(issue[key]) == 4
-          let value = issue[key].name
+      if has_key(issue, key[0])
+        if type(issue[key[0]]) == 4
+          let value = issue[key[0]].name
         else
-          let value = issue[key]
+          let value = issue[key[0]]
         endif
+        let value = value[0:key[1] - 2]
       endif
-      let issue.abbr .= value . '	'
+      let value = key[2][0] . value . key[2][1]
+      let issue.abbr .= unite#yarm#ljust(value, key[1]) . ' '
     endfor
   endif
   let issue.abbr .= issue.subject
