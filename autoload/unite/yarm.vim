@@ -16,7 +16,7 @@ function! unite#yarm#parse_args(args)
         \ 'status'   : 'status_id'   ,
         \ 'project'  : 'project_id'  ,
         \ 'tracker'  : 'tracker_id'  ,
-        \ 'assigned' : 'assigned_to'
+        \ 'assigned' : 'assigned_to_id'
         \ }
   let option = {}
   for arg in a:args
