@@ -109,7 +109,7 @@ endfunction
 "
 function! unite#yarm#to_issue(issue)
   let issue = a:issue
-  let issue.abbr = '#' . issue.id . ' '
+  let issue.abbr = '#' . issue.id . '	'
   if exists('g:unite_yarm_title_fields')
     for key in g:unite_yarm_title_fields
       let value = ''
@@ -120,7 +120,7 @@ function! unite#yarm#to_issue(issue)
           let value = issue[key]
         endif
       endif
-      let issue.abbr .= '[' . value . '] '
+      let issue.abbr .= value . '	'
     endfor
   endif
   let issue.abbr .= issue.subject
