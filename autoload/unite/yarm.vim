@@ -105,6 +105,24 @@ function! unite#yarm#open_browser(id)
   echohl None
 endfunction
 "
+" Multibyte trim
+"
+function! unite#yarm#multi_trim(str, size)  " {{{
+  let str = ''
+  let size = 0
+  let real_size = 0
+  while real_size < a:size && size < len(a:str)
+    let str .= a:str[size]
+    if a:str[size] =~ '[^\x00-\x7F]'
+      let size += 1
+      let str .= a:str[size]
+    endif
+    let size += 1
+    let real_size += 1
+  endwhile
+  return unite#yarm#ljust(str, a:size)
+endfunction  " }}}
+"
 " json to issue
 "
 function! unite#yarm#to_issue(issue)
@@ -119,10 +137,9 @@ function! unite#yarm#to_issue(issue)
         else
           let value = issue[key[0]]
         endif
-        let value = value[0:key[1] - 2]
       endif
-      let value = unite#yarm#ljust(value, key[1])
-      let value = '|' . key[0] . '|' . value . '|' . key[0] . '|'
+      let value = unite#yarm#multi_trim(value, key[1])
+      let value = '|' . key[0][0:3] . '|' . value . '|' . key[0][0:3] . '|'
       let issue.abbr .= value . ' '
     endfor
   endif

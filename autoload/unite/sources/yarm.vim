@@ -52,6 +52,7 @@ function! s:unite_source.gather_candidates(args, context)
         \ "abbr"          : v:val.abbr,
         \ "word"          : v:val.word,
         \ "source"        : "yarm",
+        \ "is_multiline"  : 1,
         \ "source__issue" : v:val,
         \ "source__type"  : "cache",
         \ }')
@@ -85,12 +86,12 @@ function! s:unite_source.hooks.on_syntax(args, context) abort "{{{
   if exists('g:unite_yarm_title_fields')
     for key in g:unite_yarm_title_fields
       let cmd = 'syntax match uniteSource__Redmine_' . key[0] . ' /'
-      let cmd .= '|' . key[0] . '|.\{-}|' . key[0] . '|/'
+      let cmd .= '|' . key[0][0:3] . '|.\{-}|' . key[0][0:3] . '|/'
       let cmd .= ' contained containedin=uniteSource__Redmine'
       execute cmd
       execute 'highlight default link uniteSource__Redmine_' . key[0] . ' ' . key[2]
       execute 'syntax match uniteSource__RedmineOp_' . key[0] . ' /|' .
-        \ key[0] . '|/ conceal cchar= ' .
+        \ key[0][0:3] . '|/ conceal cchar= ' .
         \ 'contained containedin=uniteSource__Redmine_' . key[0]
     endfor
   endif
@@ -116,6 +117,7 @@ function! s:action_table.open.func(candidate)
               \ "abbr"          : issue.abbr,
               \ "word"          : issue.word,
               \ "source"        : "yarm",
+              \ "is_multiline"  : 1,
               \ "source__issue" : issue,
               \ "source__type"  : "cache",
               \ })
