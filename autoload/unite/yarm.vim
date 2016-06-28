@@ -121,8 +121,9 @@ function! unite#yarm#to_issue(issue)
         endif
         let value = value[0:key[1] - 2]
       endif
-      let value = key[2][0] . value . key[2][1]
-      let issue.abbr .= unite#yarm#ljust(value, key[1]) . ' '
+      let value = unite#yarm#ljust(value, key[1])
+      let value = '|' . key[0] . '|' . value . '|' . key[0] . '|'
+      let issue.abbr .= value . ' '
     endfor
   endif
   let issue.abbr .= issue.subject

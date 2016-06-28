@@ -85,18 +85,13 @@ function! s:unite_source.hooks.on_syntax(args, context) abort "{{{
   if exists('g:unite_yarm_title_fields')
     for key in g:unite_yarm_title_fields
       let cmd = 'syntax match uniteSource__Redmine_' . key[0] . ' /'
-      let left_val = key[2][0]
-      if left_val == '[' || left_val == ']'
-        let left_val = '\' . left_val
-      endif
-      let right_val = key[2][1]
-      if right_val == '[' || right_val == ']'
-        let right_val = '\' . right_val
-      endif
-      let cmd .= left_val . '.\{-}' . right_val . '/'
+      let cmd .= '|' . key[0] . '|.\{-}|' . key[0] . '|/'
       let cmd .= ' contained containedin=uniteSource__Redmine'
       execute cmd
-      execute 'highlight default link uniteSource__Redmine_' . key[0] . ' ' . key[3]
+      execute 'highlight default link uniteSource__Redmine_' . key[0] . ' ' . key[2]
+      execute 'syntax match uniteSource__RedmineOp_' . key[0] . ' /|' .
+        \ key[0] . '|/ conceal cchar= ' .
+        \ 'contained containedin=uniteSource__Redmine_' . key[0]
     endfor
   endif
   highlight default link uniteSource__Redmine_issue PreProc
