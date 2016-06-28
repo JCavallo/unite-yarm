@@ -151,22 +151,31 @@ function! unite#yarm#get_issues(option)
     endif
     let url .= '&' . key . '=' . a:option[key]
   endfor
-  let res = webapi#http#get(url)
-  " server is not active
-  if len(res.header) == 0
-    call unite#yarm#error('can not access ' . s:server_url())
-    return []
-  endif
-  " check status code
-  if split(res.header[10])[1] != '200'
-    call unite#yarm#error(res.header[0])
-    return []
-  endif
-  " convert xml to dict
   let issues = []
-  for issue in webapi#json#decode(res.content).issues
-    call add(issues , unite#yarm#to_issue(issue))
-  endfor
+  let offset = 0
+  while 1
+    let final_url = url . '&offset=' . offset
+    let res = webapi#http#get(final_url)
+    " server is not active
+    if len(res.header) == 0
+        call unite#yarm#error('can not access ' . s:server_url())
+        return []
+    endif
+    " check status code
+    if split(res.header[10])[1] != '200'
+        call unite#yarm#error(res.header[0])
+        return []
+    endif
+    " convert xml to dict
+    let parsed = webapi#json#decode(res.content).issues
+    if len(parsed) == 0
+      break
+    endif
+    for issue in parsed
+        call add(issues , unite#yarm#to_issue(issue))
+    endfor
+    let offset = offset + 100
+  endwhile
   return issues
 endfunction
 "
